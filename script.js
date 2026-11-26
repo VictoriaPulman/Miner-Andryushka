@@ -42,6 +42,8 @@ const CONFETTI_COLORS = ['#e7b93f', '#8fae5e', '#d4774c', '#fff3d0', '#6fa9b8'];
 /* ---------- DOM ---------- */
 const el = {
   board:            document.getElementById('board'),
+  modeSwitch:       document.getElementById('mode-switch'),
+  modeButtons:      document.querySelectorAll('.mode-btn'),
   minesLeft:        document.getElementById('mines-left'),
   timer:            document.getElementById('timer'),
   portrait:         document.getElementById('portrait-btn'),
@@ -89,9 +91,10 @@ let moodTimer = null;
 let toastTimer = null;
 let celebrationTimer = null;
 let suppressClick = false;      // защита от клика после долгого нажатия на телефоне
-let pressTimer = null;
-let pressIndex = null;
-let pressStart = { x: 0, y: 0 };
+let actionMode = 'dig';         // dig — копать, flag — ставить таблички
+let touchTimer = null;          // таймер долгого нажатия (touchstart/touchend)
+let touchIndex = null;
+let touchStart = { x: 0, y: 0 };
 
 /* ---------- Дневник ---------- */
 let stats = loadStats();
@@ -263,7 +266,8 @@ function resetGame(showMessage = true) {
   flagsPlaced = 0;
   seconds = 0;
   explodedIndex = -1;
-  clearPress();
+  suppressClick = false;
+  clearTouchPress();
 
   el.timer.textContent = '00:00';
   setMood('normal');
@@ -369,7 +373,7 @@ function finishGame(isVictory, exploded) {
   won = isVictory;
   explodedIndex = exploded;
   stopTimer();
-  clearPress();
+  clearTouchPress();
 
   const previousRank = currentRankIndex;
 
@@ -588,13 +592,57 @@ function hideCelebration() {
 }
 
 /* ================================================================
-   Обработка долгого нажатия (для сенсорных экранов)
+   Режим действия и долгое нажатие (для сенсорных экранов)
    ================================================================ */
 
-function clearPress() {
-  clearTimeout(pressTimer);
-  pressTimer = null;
-  pressIndex = null;
+/** Сброс состояния долгого нажатия. */
+function clearTouchPress() {
+  clearTimeout(touchTimer);
+  touchTimer = null;
+  touchIndex = null;
+}
+
+/** Выбор действия по обычному нажатию: копать или ставить флажок. */
+function setActionMode(mode) {
+  actionMode = mode;
+  el.modeButtons.forEach((button) => {
+    const active = button.dataset.mode === mode;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+}
+
+/** Touch-события: долгое удержание на закрытой клетке ставит/снимает флажок. */
+function handleTouchStart(event) {
+  if (event.touches.length !== 1) {
+    clearTouchPress();
+    return;
+  }
+
+  const button = event.target.closest('.cell');
+  if (!button) return;
+
+  const touch = event.touches[0];
+  touchIndex = Number(button.dataset.index);
+  touchStart = { x: touch.clientX, y: touch.clientY };
+
+  clearTimeout(touchTimer);
+  touchTimer = setTimeout(() => {
+    if (touchIndex === null) return;
+    toggleFlag(touchIndex);
+    if (typeof navigator.vibrate === 'function') navigator.vibrate(40);
+    suppressClick = true; // чтобы после долгого тапа клетка не открылась
+    setTimeout(() => { suppressClick = false; }, 700);
+    clearTouchPress();
+  }, 380);
+}
+
+function handleTouchMove(event) {
+  if (touchTimer === null) return;
+  const touch = event.touches[0];
+  if (!touch) return;
+  const distance = Math.hypot(touch.clientX - touchStart.x, touch.clientY - touchStart.y);
+  if (distance > 12) clearTouchPress(); // палец уехал — это прокрутка, не долгий тап
 }
 
 function setupEvents() {
@@ -604,11 +652,16 @@ function setupEvents() {
       return;
     }
     const button = event.target.closest('.cell');
-    if (button) reveal(Number(button.dataset.index));
+    if (!button) return;
+
+    const index = Number(button.dataset.index);
+    if (actionMode === 'flag') toggleFlag(index);
+    else reveal(index);
   });
 
+  // ПКМ на ПК всегда ставит/снимает флажок, независимо от выбранного режима
   el.board.addEventListener('contextmenu', (event) => {
-    event.preventDefault(); // чтобы не открывалось системное меню
+    event.preventDefault(); // запрещаем системное меню при долгом тапе
     const button = event.target.closest('.cell');
     if (button) toggleFlag(Number(button.dataset.index));
   });
@@ -623,33 +676,15 @@ function setupEvents() {
     toggleFlag(Number(button.dataset.index));
   });
 
-  // На телефоне долгое нажатие ставит табличку вместо копа
-  el.board.addEventListener('pointerdown', (event) => {
-    if (event.pointerType !== 'touch') return;
-    const button = event.target.closest('.cell');
-    if (!button) return;
+  // Сенсорное управление: тап — выбранное действие, долгое нажатие — флажок
+  el.board.addEventListener('touchstart', handleTouchStart, { passive: true });
+  el.board.addEventListener('touchmove', handleTouchMove, { passive: true });
+  el.board.addEventListener('touchend', clearTouchPress, { passive: true });
+  el.board.addEventListener('touchcancel', clearTouchPress, { passive: true });
 
-    pressIndex = Number(button.dataset.index);
-    pressStart = { x: event.clientX, y: event.clientY };
-    clearTimeout(pressTimer);
-    pressTimer = setTimeout(() => {
-      if (pressIndex === null) return;
-      toggleFlag(pressIndex);
-      suppressClick = true;
-      setTimeout(() => { suppressClick = false; }, 500);
-      clearPress();
-    }, 450);
+  el.modeButtons.forEach((button) => {
+    button.addEventListener('click', () => setActionMode(button.dataset.mode));
   });
-
-  el.board.addEventListener('pointermove', (event) => {
-    if (pressTimer === null) return;
-    const distance = Math.hypot(event.clientX - pressStart.x, event.clientY - pressStart.y);
-    if (distance > 12) clearPress();
-  });
-
-  el.board.addEventListener('pointerup', clearPress);
-  el.board.addEventListener('pointercancel', clearPress);
-  document.addEventListener('pointerup', clearPress);
 
   el.portrait.addEventListener('click', () => resetGame());
   el.newGameBtn.addEventListener('click', () => resetGame());
@@ -688,5 +723,6 @@ function setupEvents() {
 buildBoardDOM();
 buildLegend();
 updateDiary();
+setActionMode(actionMode);
 setupEvents();
 resetGame(false);
