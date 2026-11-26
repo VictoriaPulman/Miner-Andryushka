@@ -418,6 +418,33 @@ body::before {
 
 .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
 
+/* ---------- Авторская подпись ---------- */
+.author-sign {
+  width: 100%;
+  margin-top: 14px;
+  padding-bottom: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(245, 230, 200, 0.55);
+}
+
+.author-sign a {
+  color: #d4a359;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.author-sign a:hover {
+  color: #e6c27f;
+  border-bottom-color: #d4a359;
+}
+
+.author-sign a:focus-visible {
+  outline: 2px solid #d4a359;
+  outline-offset: 2px;
+}
+
 /* ---------- Боковые панели ---------- */
 .panel {
   padding: 16px;
