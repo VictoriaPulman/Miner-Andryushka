@@ -91,6 +91,7 @@ let moodTimer = null;
 let toastTimer = null;
 let celebrationTimer = null;
 let suppressClick = false;      // защита от клика после долгого нажатия на телефоне
+let ignoreContextMenuUntil = 0; // мобильный браузер после долгого тапа шлёт ещё и contextmenu
 let actionMode = 'dig';         // dig — копать, flag — ставить таблички
 let touchTimer = null;          // таймер долгого нажатия (touchstart/touchend)
 let touchIndex = null;
@@ -267,6 +268,7 @@ function resetGame(showMessage = true) {
   seconds = 0;
   explodedIndex = -1;
   suppressClick = false;
+  ignoreContextMenuUntil = 0;
   clearTouchPress();
 
   el.timer.textContent = '00:00';
@@ -630,6 +632,8 @@ function handleTouchStart(event) {
   touchTimer = setTimeout(() => {
     if (touchIndex === null) return;
     toggleFlag(touchIndex);
+    // Долгий тап уже поставил флажок — не даём контекстному меню снять его второй раз
+    ignoreContextMenuUntil = Date.now() + 1500;
     if (typeof navigator.vibrate === 'function') navigator.vibrate(40);
     suppressClick = true; // чтобы после долгого тапа клетка не открылась
     setTimeout(() => { suppressClick = false; }, 700);
@@ -642,7 +646,7 @@ function handleTouchMove(event) {
   const touch = event.touches[0];
   if (!touch) return;
   const distance = Math.hypot(touch.clientX - touchStart.x, touch.clientY - touchStart.y);
-  if (distance > 12) clearTouchPress(); // палец уехал — это прокрутка, не долгий тап
+  if (distance > 20) clearTouchPress(); // палец уехал — это прокрутка, не долгий тап
 }
 
 function setupEvents() {
@@ -662,6 +666,14 @@ function setupEvents() {
   // ПКМ на ПК всегда ставит/снимает флажок, независимо от выбранного режима
   el.board.addEventListener('contextmenu', (event) => {
     event.preventDefault(); // запрещаем системное меню при долгом тапе
+
+    // На телефоне после долгого удержания браузер сам шлёт contextmenu.
+    // Флажок там уже поставлен таймером — пропускаем повторное срабатывание.
+    if (Date.now() < ignoreContextMenuUntil) {
+      ignoreContextMenuUntil = 0;
+      return;
+    }
+
     const button = event.target.closest('.cell');
     if (button) toggleFlag(Number(button.dataset.index));
   });
