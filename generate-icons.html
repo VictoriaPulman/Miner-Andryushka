@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Генератор PNG-иконок — Miner Andryushka</title>
+  <style>
+    body {
+      max-width: 520px;
+      margin: 60px auto;
+      padding: 0 18px;
+      font-family: system-ui, sans-serif;
+      color: #4a3520;
+      background: #f3e1b6;
+      text-align: center;
+    }
+    h1 { font-size: 1.3rem; }
+    p { font-size: 0.9rem; color: #7b6244; }
+    button {
+      margin-top: 18px;
+      padding: 12px 18px;
+      border: 2px solid #6d4725;
+      border-radius: 10px;
+      font: inherit;
+      font-weight: 700;
+      color: #fff3d8;
+      background: linear-gradient(180deg, #8fae5e, #5f8439);
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: default; }
+    .status { margin-top: 14px; min-height: 1.4em; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Генератор PNG-иконок</h1>
+  <p>Нажмите кнопку — страница создаст <code>icon-192.png</code> и <code>icon-512.png</code> из <code>icon.svg</code> и скачает их.</p>
+  <button id="download" type="button">Скачать обе иконки</button>
+  <p class="status" id="status"></p>
+
+  <script>
+    const button = document.getElementById('download');
+    const status = document.getElementById('status');
+
+    async function renderIcon(size) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Тёмный фон, как в manifest.json (углы maskable-иконки)
+      ctx.fillStyle = '#2b1d14';
+      ctx.fillRect(0, 0, size, size);
+
+      const svgText = await fetch('./icon.svg').then((response) => response.text());
+      const blob = new Blob([svgText], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const image = new Image();
+
+      await new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = reject;
+        image.src = url;
+      });
+
+      ctx.drawImage(image, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+
+      return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    }
+
+    function saveBlob(blob, fileName) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    }
+
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      status.textContent = 'Генерирую иконки…';
+
+      try {
+        const icon192 = await renderIcon(192);
+        const icon512 = await renderIcon(512);
+        saveBlob(icon192, 'icon-192.png');
+        saveBlob(icon512, 'icon-512.png');
+        status.textContent = 'Готово! Положите скачанные файлы рядом с index.html.';
+      } catch (error) {
+        status.textContent = 'Не удалось сгенерировать иконки: ' + error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
