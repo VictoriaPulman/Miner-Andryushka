@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Археологический сапёр: Андрюшка ищет древности и остерегается какашек.">
+  <title>Miner Andryushka</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================================================================
+       Библиотечка SVG-символов: артефакты (1–8) и эмоции Андрюшки.
+       Все иконки встроены в страницу — внешних картинок нет.
+       ================================================================ -->
+  <svg class="svg-defs" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- 1 — лопаточка археолога -->
+      <symbol id="i-1" viewBox="0 0 32 32">
+        <path d="M5 28 L15 18" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/>
+        <path d="M14 19 L18 15" stroke="#d0a24f" stroke-width="5" stroke-linecap="round"/>
+        <path d="M17 15 C19 8 26 4 29 5 C30 11 26 18 20 18 Z" fill="#dfe7eb" stroke="#74828c" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M21 14 q4-4 6-4" stroke="#fff" stroke-width="1.5" fill="none" opacity=".8"/>
+      </symbol>
+
+      <!-- 2 — кисточка для пыли -->
+      <symbol id="i-2" viewBox="0 0 32 32">
+        <g transform="rotate(-38 16 16)">
+          <rect x="3" y="13" width="15" height="6" rx="3" fill="#a9703b" stroke="#714521" stroke-width="1.4"/>
+          <rect x="16" y="11" width="8" height="10" rx="2" fill="#dcb574" stroke="#8c6634" stroke-width="1.4"/>
+          <path d="M24 12 h4 M24 15 h5 M24 18 h4" stroke="#c79d5e" stroke-width="2" stroke-linecap="round"/>
+        </g>
+      </symbol>
+
+      <!-- 3 — осколок глиняной вазы -->
+      <symbol id="i-3" viewBox="0 0 32 32">
+        <path d="M7 6 Q16 3 25 8 L23 25 Q15 29 8 24 Z" fill="#c87851" stroke="#8b452b" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M7 6 l5 5 -3 5 5 4 -3 4 M25 8 l-5 5 3 5 -4 4 4 3" fill="none" stroke="#8b452b" stroke-width="1.4"/>
+        <path d="M12 15 q5 3 9 0 M12 21 q5 3 8 0" fill="none" stroke="#f0b58c" stroke-width="1.4"/>
+      </symbol>
+
+      <!-- 4 — древняя монета -->
+      <symbol id="i-4" viewBox="0 0 32 32">
+        <circle cx="16" cy="16" r="12" fill="#e6b93f" stroke="#9a7420" stroke-width="2"/>
+        <circle cx="16" cy="16" r="8.5" fill="none" stroke="#fff0ae" stroke-width="1.4"/>
+        <path d="M16 9 l1.9 4.1 4.5.4 -3.4 3 1 4.4 -4-2.3 -4 2.3 1-4.4 -3.4-3 4.5-.4z" fill="#fff0ae"/>
+      </symbol>
+
+      <!-- 5 — лупа -->
+      <symbol id="i-5" viewBox="0 0 32 32">
+        <circle cx="13.5" cy="13.5" r="8.5" fill="#dceff2" fill-opacity=".85" stroke="#7a5832" stroke-width="3"/>
+        <path d="M20 20 L28 28" stroke="#7a5832" stroke-width="5.5" stroke-linecap="round"/>
+        <path d="M9 12 a5 5 0 0 1 4-4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+      </symbol>
+
+      <!-- 6 — кость динозавра -->
+      <symbol id="i-6" viewBox="0 0 32 32">
+        <g transform="rotate(-28 16 16)">
+          <rect x="8" y="13" width="16" height="6" rx="1" fill="#efe8d5" stroke="#a79a7f" stroke-width="1.4"/>
+          <circle cx="8" cy="11" r="3.6" fill="#efe8d5" stroke="#a79a7f" stroke-width="1.4"/>
+          <circle cx="8" cy="21" r="3.6" fill="#efe8d5" stroke="#a79a7f" stroke-width="1.4"/>
+          <circle cx="24" cy="11" r="3.6" fill="#efe8d5" stroke="#a79a7f" stroke-width="1.4"/>
+          <circle cx="24" cy="21" r="3.6" fill="#efe8d5" stroke="#a79a7f" stroke-width="1.4"/>
+        </g>
+      </symbol>
+
+      <!-- 7 — древний свиток -->
+      <symbol id="i-7" viewBox="0 0 32 32">
+        <rect x="8" y="6" width="16" height="20" rx="1.5" fill="#f2dda9" stroke="#a67c3c" stroke-width="1.5"/>
+        <path d="M7 8 q9-4 18 0 v4 q-9-4-18 0z" fill="#d9b878" stroke="#8e6a32" stroke-width="1.3"/>
+        <path d="M7 22 q9 4 18 0 v4 q-9 4-18 0z" fill="#d9b878" stroke="#8e6a32" stroke-width="1.3"/>
+        <path d="M12 15 h8 M12 18.5 h5.5" stroke="#a67c3c" stroke-width="1.5" stroke-linecap="round"/>
+      </symbol>
+
+      <!-- 8 — золотой идол -->
+      <symbol id="i-8" viewBox="0 0 32 32">
+        <path d="M16 3 v3 M8 7 l2 2 M24 7 l-2 2" stroke="#f2cc63" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="16" cy="11" r="4.5" fill="#f2cc63" stroke="#a67a1e" stroke-width="1.5"/>
+        <path d="M10 16 h12 l3 13 H7 z" fill="#e8b83e" stroke="#a67a1e" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M13 19 l3 3 -3 3 M19 19 l-3 3 3 3" fill="none" stroke="#8e6515" stroke-width="1.6"/>
+        <path d="M7 29 h18" stroke="#a67a1e" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+
+      <!-- Андрюшка: обычное состояние -->
+      <symbol id="hero-normal" viewBox="0 0 120 120">
+        <ellipse cx="60" cy="113" rx="33" ry="5" fill="rgba(58,36,16,.14)"/>
+        <path d="M34 112 Q34 82 60 82 Q86 82 86 112 Z" fill="#708a4c" stroke="#3f5530" stroke-width="2"/>
+        <path d="M47 85 L49 112 M73 85 L71 112" stroke="#4d6537" stroke-width="2"/>
+        <rect x="53" y="69" width="14" height="15" rx="5" fill="#e6b386"/>
+        <circle cx="32" cy="48" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+        <circle cx="88" cy="48" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+        <ellipse cx="60" cy="46" rx="28" ry="29" fill="#f2c8a0" stroke="#b98255" stroke-width="2"/>
+        <!-- гладкая лысая макушка с бликом -->
+        <ellipse cx="50" cy="28" rx="10" ry="4.5" fill="#fff" opacity=".4"/>
+        <path d="M43 38 q5-3 10 0 M67 38 q5-3 10 0" stroke="#5a3a22" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="48" cy="45" r="3" fill="#3b2b20"/><circle cx="72" cy="45" r="3" fill="#3b2b20"/>
+        <circle cx="49" cy="44" r="1" fill="#fff"/><circle cx="73" cy="44" r="1" fill="#fff"/>
+        <path d="M60 46 v6 q0 2 3 2" stroke="#c58f5f" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- окладистая борода -->
+        <path d="M32 50 C30 68 34 86 46 96 C52 101 68 101 74 96 C86 86 90 68 88 50 C82 58 72 62 60 62 C48 62 38 58 32 50 Z" fill="#6b4829" stroke="#4a301c" stroke-width="2"/>
+        <path d="M39 62 q3 16 10 24 M49 66 q2 14 6 21 M60 68 v24 M71 66 q-2 14-6 21 M81 62 q-3 16-10 24" stroke="#8a623c" stroke-width="1.6" fill="none" opacity=".75" stroke-linecap="round"/>
+        <!-- просвет у рта, чтобы эмоция читалась на бороде -->
+        <ellipse cx="60" cy="71" rx="13" ry="8.5" fill="#edbd93" stroke="#b98255" stroke-width="1"/>
+        <path d="M51 69 q9 11 18 0" stroke="#7a4626" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <!-- густые усы -->
+        <path d="M60 61 q-10-7-18 0 q8 8 18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+        <path d="M60 61 q10-7 18 0 q-8 8-18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+        <path d="M80 91 L93 72" stroke="#f2c8a0" stroke-width="9" stroke-linecap="round"/>
+        <path d="M93 72 L104 30" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/>
+        <path d="M100 46 h11" stroke="#c99a4c" stroke-width="6" stroke-linecap="round"/>
+        <path d="M100 34 q7-6 11 1 l-3 12 q-6 3-10-2 z" fill="#dfe6ea" stroke="#71808a" stroke-width="1.5"/>
+      </symbol>
+
+      <!-- Андрюшка: напряжение после клика -->
+      <symbol id="hero-tense" viewBox="0 0 120 120">
+        <ellipse cx="60" cy="113" rx="33" ry="5" fill="rgba(58,36,16,.14)"/>
+        <path d="M35 112 Q35 83 60 83 Q85 83 85 112 Z" fill="#708a4c" stroke="#3f5530" stroke-width="2"/>
+        <rect x="53" y="69" width="14" height="15" rx="5" fill="#e6b386"/>
+        <circle cx="32" cy="48" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+        <circle cx="88" cy="48" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+        <ellipse cx="60" cy="46" rx="28" ry="29" fill="#f2c8a0" stroke="#b98255" stroke-width="2"/>
+        <!-- гладкая лысая макушка с бликом -->
+        <ellipse cx="50" cy="28" rx="10" ry="4.5" fill="#fff" opacity=".35"/>
+        <path d="M42 34 l12 6 M78 34 l-12 6" stroke="#5a3a22" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <ellipse cx="48" cy="46" rx="4.5" ry="5.5" fill="#fff" stroke="#8a5f39" stroke-width="1"/>
+        <ellipse cx="72" cy="46" rx="4.5" ry="5.5" fill="#fff" stroke="#8a5f39" stroke-width="1"/>
+        <circle cx="49" cy="47" r="2" fill="#3b2b20"/><circle cx="71" cy="47" r="2" fill="#3b2b20"/>
+        <path d="M60 46 v6" stroke="#c58f5f" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- та же окладистая борода -->
+        <path d="M32 50 C30 68 34 86 46 96 C52 101 68 101 74 96 C86 86 90 68 88 50 C82 58 72 62 60 62 C48 62 38 58 32 50 Z" fill="#6b4829" stroke="#4a301c" stroke-width="2"/>
+        <path d="M39 62 q3 16 10 24 M49 66 q2 14 6 21 M60 68 v24 M71 66 q-2 14-6 21 M81 62 q-3 16-10 24" stroke="#8a623c" stroke-width="1.6" fill="none" opacity=".75" stroke-linecap="round"/>
+        <ellipse cx="60" cy="71" rx="13" ry="8.5" fill="#edbd93" stroke="#b98255" stroke-width="1"/>
+        <!-- удивлённый рот «о» -->
+        <ellipse cx="60" cy="71" rx="4.5" ry="5.5" fill="#7a4626"/>
+        <path d="M60 61 q-10-7-18 0 q8 8 18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+        <path d="M60 61 q10-7 18 0 q-8 8-18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+        <path d="M92 34 q5 8 0 11 q-5-3 0-11 z" fill="#8ec8e8" stroke="#5c9fc0" stroke-width="1"/>
+        <path d="M82 91 L95 72" stroke="#f2c8a0" stroke-width="9" stroke-linecap="round"/>
+        <path d="M95 72 L105 34" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/>
+        <path d="M101 48 h11" stroke="#c99a4c" stroke-width="6" stroke-linecap="round"/>
+        <path d="M101 38 q7-6 11 1 l-3 12 q-6 3-10-2 z" fill="#dfe6ea" stroke="#71808a" stroke-width="1.5"/>
+        <path d="M109 20 l3-4 M114 27 l4-2" stroke="#b98a4c" stroke-width="2" stroke-linecap="round"/>
+      </symbol>
+
+      <!-- Андрюшка: победа, пробковый шлем и золотой идол -->
+      <symbol id="hero-win" viewBox="0 0 120 120">
+        <ellipse cx="60" cy="113" rx="33" ry="5" fill="rgba(58,36,16,.14)"/>
+        <path d="M34 112 Q34 82 60 82 Q86 82 86 112 Z" fill="#708a4c" stroke="#3f5530" stroke-width="2"/>
+        <rect x="53" y="69" width="14" height="15" rx="5" fill="#e6b386"/>
+        <circle cx="32" cy="50" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+        <circle cx="88" cy="50" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+        <ellipse cx="60" cy="48" rx="28" ry="29" fill="#f2c8a0" stroke="#b98255" stroke-width="2"/>
+        <!-- лысая макушка под шлемом, блик виден под козырьком -->
+        <circle cx="39" cy="55" r="3.5" fill="#efa88f" opacity=".65"/><circle cx="81" cy="55" r="3.5" fill="#efa88f" opacity=".65"/>
+        <path d="M43 52 q6-6 12 0 M65 52 q6-6 12 0" stroke="#5b3b23" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <path d="M60 53 v5 q0 2 3 2" stroke="#c58f5f" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- окладистая борода -->
+        <path d="M32 52 C30 70 34 88 46 98 C52 103 68 103 74 98 C86 88 90 70 88 52 C82 60 72 64 60 64 C48 64 38 60 32 52 Z" fill="#6b4829" stroke="#4a301c" stroke-width="2"/>
+        <path d="M39 64 q3 16 10 24 M49 68 q2 14 6 21 M60 70 v24 M71 68 q-2 14-6 21 M81 64 q-3 16-10 24" stroke="#8a623c" stroke-width="1.6" fill="none" opacity=".75" stroke-linecap="round"/>
+        <ellipse cx="60" cy="73" rx="14" ry="9" fill="#edbd93" stroke="#b98255" stroke-width="1"/>
+        <!-- радостный оскал -->
+        <path d="M49 70 q11 15 22 0 z" fill="#7a4626" stroke="#5b3319" stroke-width="1.2"/>
+        <path d="M52 71 q8 7 16 0" stroke="#fff5df" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M60 63 q-10-7-18 0 q8 8 18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+        <path d="M60 63 q10-7 18 0 q-8 8-18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+        <!-- пробковый шлем -->
+        <path d="M30 44 Q30 9 60 9 Q90 9 90 44 Z" fill="#c8a36b" stroke="#7c5a33" stroke-width="2"/>
+        <path d="M33 35 q27-8 54 0" stroke="#a97c45" stroke-width="3" fill="none"/>
+        <rect x="26" y="41" width="68" height="7" rx="3.5" fill="#b98f57" stroke="#7c5a33" stroke-width="2"/>
+        <!-- блик на лысой макушке, выглядывающей из-под шлема -->
+        <ellipse cx="60" cy="49.5" rx="5" ry="2" fill="#fff" opacity=".35"/>
+        <path d="M84 90 L98 72" stroke="#f2c8a0" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="100" cy="60" r="5" fill="#f2cc63" stroke="#a67a1e" stroke-width="1.4"/>
+        <path d="M95 65 h10 l2 12 h-14 z" fill="#e8b83e" stroke="#a67a1e" stroke-width="1.4"/>
+        <path d="M14 22 v8 M10 26 h8 M107 18 v7 M103 21 h8" stroke="#e7b93f" stroke-width="2.5" stroke-linecap="round"/>
+      </symbol>
+
+      <!-- Андрюшка: обвал, гримаса и закрытый нос -->
+      <symbol id="hero-lose" viewBox="0 0 120 120">
+        <ellipse cx="60" cy="113" rx="33" ry="5" fill="rgba(58,36,16,.14)"/>
+        <path d="M36 112 Q36 84 60 84 Q84 84 84 112 Z" fill="#708a4c" stroke="#3f5530" stroke-width="2"/>
+        <rect x="53" y="70" width="14" height="15" rx="5" fill="#d9bb8f"/>
+        <circle cx="32" cy="49" r="6" fill="#c2cf99" stroke="#8e9a68" stroke-width="1.5"/>
+        <circle cx="88" cy="49" r="6" fill="#c2cf99" stroke="#8e9a68" stroke-width="1.5"/>
+        <ellipse cx="60" cy="47" rx="28" ry="29" fill="#cbd4a6" stroke="#8e9a68" stroke-width="2"/>
+        <!-- гладкая макушка с бликом -->
+        <ellipse cx="50" cy="29" rx="10" ry="4.5" fill="#fff" opacity=".3"/>
+        <path d="M41 36 q6-4 12 1 M79 36 q-6-4-12 1" stroke="#4b3b25" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M43 49 q5 5 10 0 M67 49 q5 5 10 0" stroke="#3b2b20" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+        <path d="M60 46 v6" stroke="#9a8968" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- борода слегка «позеленела» от запаха -->
+        <path d="M32 51 C30 69 34 87 46 97 C52 102 68 102 74 97 C86 87 90 69 88 51 C82 59 72 63 60 63 C48 63 38 59 32 51 Z" fill="#5d4a30" stroke="#3f3122" stroke-width="2"/>
+        <path d="M39 63 q3 16 10 24 M49 67 q2 14 6 21 M60 69 v24 M71 67 q-2 14-6 21 M81 63 q-3 16-10 24" stroke="#806b4b" stroke-width="1.6" fill="none" opacity=".7" stroke-linecap="round"/>
+        <ellipse cx="60" cy="73" rx="13" ry="8.5" fill="#d4d9ae" stroke="#8e9a68" stroke-width="1"/>
+        <!-- гримаса отвращения -->
+        <path d="M51 76 q9-9 18 0" stroke="#6b3b26" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <path d="M54 74 q6-3 12 0" stroke="#fff5df" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M60 63 q-10-7-18 0 q8 8 18 2 z" fill="#4b3b25" stroke="#3f3122" stroke-width="1"/>
+        <path d="M60 63 q10-7 18 0 q-8 8-18 2 z" fill="#4b3b25" stroke="#3f3122" stroke-width="1"/>
+        <!-- рука закрывает нос, но гримаса остаётся видна -->
+        <g transform="rotate(-12 60 58)">
+          <rect x="47" y="51" width="26" height="13" rx="6" fill="#f2c8a0" stroke="#8a5f39" stroke-width="2"/>
+          <path d="M53 52 v11 M60 51 v13 M67 52 v11" stroke="#dca876" stroke-width="1.4"/>
+        </g>
+        <path d="M92 35 q5 8 0 11 q-5-3 0-11 z" fill="#8ec8e8" stroke="#5c9fc0" stroke-width="1"/>
+        <path d="M25 61 q-6 5 0 10 M20 57 q-9 7 0 16" stroke="#89a06e" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>
+        <path d="M96 92 q-7-8 2-11 q1-6 8-4 q7-2 9 5 q7 4 1 10 q-9 6-20 0 z" fill="#7b5230" stroke="#52341d" stroke-width="1.5"/>
+        <circle cx="101" cy="86" r="1.4" fill="#3b2b20"/><circle cx="109" cy="86" r="1.4" fill="#3b2b20"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="page">
+    <header class="page-header">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🏺</span>
+        <div>
+          <h1>Miner Andryushka</h1>
+          <p>Классический сапёр: лопатка, какашки и древние находки</p>
+        </div>
+      </div>
+      <button class="btn btn-ghost header-rank-btn" type="button" data-open-ranks>🏅 Таблица рангов</button>
+    </header>
+
+    <main class="layout">
+      <!-- ============ Игровая зона ============ -->
+      <section class="dig-site" aria-label="Игровое поле">
+        <div class="hud">
+          <div class="hud-block">
+            <span class="hud-label">Какашек осталось</span>
+            <div class="hud-value"><span class="hud-emoji" aria-hidden="true">💩</span><span id="mines-left">10</span></div>
+          </div>
+
+          <!-- По клику на портрет — перезапуск раскопа -->
+          <button class="portrait" id="portrait-btn" type="button" title="Начать новый раскоп" aria-label="Портрет Андрюшки. Начать новый раскоп">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><use id="hero-use" href="#hero-normal"></use></svg>
+            <span class="portrait-caption">Новый шурф</span>
+          </button>
+
+          <div class="hud-block">
+            <span class="hud-label">Время раскопа</span>
+            <div class="hud-value"><span class="hud-emoji" aria-hidden="true">⏱️</span><span id="timer">00:00</span></div>
+          </div>
+        </div>
+
+        <div class="board-frame">
+          <div class="board" id="board" role="group" aria-label="Участок раскопок 10 на 10"></div>
+        </div>
+
+        <div class="status-panel">
+          <p class="status-message" id="status-text" role="status" aria-live="polite">Андрюшка: «Копай поаккуратнее, тут что-то пахнет…»</p>
+          <p class="status-hint">ЛКМ — выкопать шурф · ПКМ — табличка «Опасно! Не копать» · первый удар всегда безопасен</p>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-primary" id="new-game-btn" type="button">🪏 Новый шурф</button>
+          <button class="btn" type="button" data-open-ranks>🏅 Таблица рангов</button>
+          <button class="btn btn-danger-ghost" id="reset-btn" type="button">🧹 Сбросить статистику</button>
+        </div>
+      </section>
+
+      <!-- ============ Боковая панель ============ -->
+      <aside class="sidebar" aria-label="Дневник и шпаргалка">
+        <section class="panel diary">
+          <h2>📖 Дневник экспедиций</h2>
+
+          <div class="rank-card">
+            <div class="rank-medal" aria-hidden="true">🏅</div>
+            <div>
+              <div class="rank-eyebrow" id="rank-level">Звание 1 из 10</div>
+              <div class="rank-name" id="rank-name">Копарь</div>
+            </div>
+          </div>
+
+          <div class="progress">
+            <div class="progress-head">
+              <span>До следующего звания</span>
+              <strong id="rank-progress-percent">0%</strong>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="rank-progress-fill"></div></div>
+            <p class="progress-next" id="rank-next">Следующее: Землекоп-стажёр</p>
+            <p class="progress-detail" id="rank-progress-text">Ещё 3 победы и 30% успеха</p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat"><span class="stat-value" id="stat-total">0</span><span class="stat-label">Шурфы</span></div>
+            <div class="stat"><span class="stat-value" id="stat-wins">0</span><span class="stat-label">Победы</span></div>
+            <div class="stat"><span class="stat-value" id="stat-losses">0</span><span class="stat-label">Обвалы</span></div>
+            <div class="stat"><span class="stat-value" id="stat-rate">0%</span><span class="stat-label">% успеха</span></div>
+          </div>
+
+          <p class="diary-note">Дневник ведётся автоматически и сохраняется в этом браузере.</p>
+        </section>
+
+        <section class="panel legend">
+          <h2>🗺️ Шпаргалка-ориентир</h2>
+          <p class="legend-intro">Вместо цифр на шурфах Андрюшка оставляет находки:</p>
+          <ul class="legend-list" id="legend-list"></ul>
+          <div class="legend-mine"><span class="mine-emoji" aria-hidden="true">💩</span><span>Какашка — обвал, не копать!</span></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <!-- ============ Модальное окно «Таблица рангов» ============ -->
+  <div class="modal" id="ranks-modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ranks-title">
+      <button class="icon-close" type="button" data-close-modal aria-label="Закрыть таблицу рангов">×</button>
+      <h2 id="ranks-title">🏅 Таблица рангов Андрюшки</h2>
+      <p class="modal-summary" id="ranks-summary"></p>
+      <div class="rank-table" id="rank-table"></div>
+      <p class="modal-note">Звание присваивается, если выполнены <strong>оба</strong> условия: нужное число побед и нужный процент успеха.</p>
+    </div>
+  </div>
+
+  <!-- ============ Праздничное уведомление о новом звании ============ -->
+  <div class="celebration" id="celebration" hidden>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+    <div class="celebration-card" role="status" aria-live="polite">
+      <button class="icon-close" id="celebration-close" type="button" aria-label="Закрыть поздравление">×</button>
+      <svg class="celebration-hero" viewBox="0 0 120 120" aria-hidden="true"><use href="#hero-win"></use></svg>
+      <p class="celebration-kicker">Повышение звания!</p>
+      <h2 id="celebration-rank">Копарь</h2>
+      <p id="celebration-text">Андрюшка получил новый чин!</p>
+    </div>
+  </div>
+
+  <!-- Лёгкие всплывающие уведомления -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
