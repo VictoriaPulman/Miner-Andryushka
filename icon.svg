@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Miner Andryushka">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0d9a6"/>
+      <stop offset="0.55" stop-color="#d8bb86"/>
+      <stop offset="1" stop-color="#a97843"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6d3ad"/>
+      <stop offset="1" stop-color="#e8b98d"/>
+    </linearGradient>
+    <linearGradient id="beard" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a5230"/>
+      <stop offset="1" stop-color="#5a3a22"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7d9b54"/>
+      <stop offset="1" stop-color="#4f6c35"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe089"/>
+      <stop offset="1" stop-color="#d3a02f"/>
+    </linearGradient>
+    <clipPath id="round">
+      <rect x="0" y="0" width="512" height="512" rx="96"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#round)">
+    <!-- Тёплый песочный фон -->
+    <rect width="512" height="512" fill="url(#bg)"/>
+
+    <!-- Мелкие «песчинки» -->
+    <g fill="#8d6a3d" opacity="0.18">
+      <circle cx="62" cy="118" r="3"/><circle cx="104" cy="78" r="2"/>
+      <circle cx="430" cy="140" r="3"/><circle cx="466" cy="212" r="2"/>
+      <circle cx="52" cy="330" r="2"/><circle cx="118" cy="436" r="3"/>
+      <circle cx="392" cy="460" r="2"/><circle cx="452" cy="386" r="3"/>
+    </g>
+
+    <!-- Мягкая рамка иконки -->
+    <rect x="14" y="14" width="484" height="484" rx="84" fill="none" stroke="#fff0cf" stroke-opacity="0.45" stroke-width="6"/>
+
+    <!-- Портрет Андрюшки в стиле игры -->
+    <g transform="translate(20 18) scale(3.93)">
+      <!-- Лопатка за плечом -->
+      <path d="M80 92 L95 70" stroke="#f2c8a0" stroke-width="9" stroke-linecap="round"/>
+      <path d="M95 70 L104 30" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/>
+      <path d="M100 46 h11" stroke="#c99a4c" stroke-width="6" stroke-linecap="round"/>
+      <path d="M100 34 q7-6 11 1 l-3 12 q-6 3-10-2 z" fill="#dfe6ea" stroke="#71808a" stroke-width="1.5"/>
+
+      <!-- Плечи -->
+      <path d="M34 112 Q34 82 60 82 Q86 82 86 112 Z" fill="url(#shirt)" stroke="#3f5530" stroke-width="2"/>
+      <rect x="53" y="69" width="14" height="15" rx="5" fill="#e6b386"/>
+
+      <!-- Уши и лицо -->
+      <circle cx="32" cy="48" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+      <circle cx="88" cy="48" r="6" fill="#edbd93" stroke="#b98255" stroke-width="1.5"/>
+      <ellipse cx="60" cy="46" rx="28" ry="29" fill="url(#skin)" stroke="#b98255" stroke-width="2"/>
+
+      <!-- Лысая макушка с бликом -->
+      <ellipse cx="50" cy="28" rx="10" ry="4.5" fill="#fff" opacity="0.45"/>
+      <path d="M43 38 q5-3 10 0 M67 38 q5-3 10 0" stroke="#5a3a22" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+      <!-- Глаза -->
+      <circle cx="48" cy="45" r="3" fill="#3b2b20"/>
+      <circle cx="72" cy="45" r="3" fill="#3b2b20"/>
+      <circle cx="49" cy="44" r="1" fill="#fff"/>
+      <circle cx="73" cy="44" r="1" fill="#fff"/>
+
+      <!-- Нос -->
+      <path d="M60 46 v6 q0 2 3 2" stroke="#c58f5f" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- Короткая окладистая борода -->
+      <path d="M32 50 C30 64 34 78 44 86 C50 91 70 91 76 86 C86 78 90 64 88 50 C82 58 72 62 60 62 C48 62 38 58 32 50 Z" fill="url(#beard)" stroke="#4a301c" stroke-width="2"/>
+      <path d="M39 62 q3 11 8 18 M49 66 q2 10 5 15 M60 68 v16 M71 66 q-2 10-5 15 M81 62 q-3 11-8 18" stroke="#9a7050" stroke-width="1.6" fill="none" opacity="0.75" stroke-linecap="round"/>
+
+      <!-- Просвет у рта и улыбка -->
+      <ellipse cx="60" cy="71" rx="13" ry="8.5" fill="#edbd93" stroke="#b98255" stroke-width="1"/>
+      <path d="M51 69 q9 11 18 0" stroke="#7a4626" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+
+      <!-- Густые усы -->
+      <path d="M60 61 q-10-7-18 0 q8 8 18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+      <path d="M60 61 q10-7 18 0 q-8 8-18 2 z" fill="#5a3a22" stroke="#4a301c" stroke-width="1"/>
+    </g>
+
+    <!-- Золотая монетка-акцент -->
+    <g transform="translate(86 398)">
+      <circle cx="0" cy="0" r="34" fill="url(#gold)" stroke="#9a7420" stroke-width="6"/>
+      <circle cx="0" cy="0" r="24" fill="none" stroke="#fff0ae" stroke-opacity="0.8" stroke-width="3"/>
+      <path d="M0 -15 l4 9 10 1 -7 7 2 10 -9-5 -9 5 2-10 -7-7 10-1z" fill="#fff5cf"/>
+    </g>
+  </g>
+</svg>
